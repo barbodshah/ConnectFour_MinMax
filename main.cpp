@@ -9,85 +9,112 @@ using namespace std;
 
 tuple<int, int> find_match(vector<vector<int>> board, int match_length){
     int x_matches = 0;
-    int o_matches = 0;
+    int o_mathces = 0;
     for(int i = 0 ; i < 6 ; i ++){
-        for (int j = 0 ; j < 7 - (match_length - 1) ; j ++){
+        for (int j = 0 ; j < 4 ; j ++){
             bool match = true;
-            for (int k = 0 ; k < match_length ; k ++){
-                if (board[i][j]!=board[i][j + k] || board[i][j] == 0 || board[i][j + k] == 0){
-                    match=false;
-                    break;
-                }
+            vector<int> next_four(3, 0);
+            for (int k = 0 ; k < 4 ; k ++){
+                next_four[board[i][j + k]]++;
             }
-            if (match==true){
-                if(board[i][j] == 1 ){
+            if(next_four[1] != 0 && next_four[2] != 0){
+                //both x and o in the next four. no match
+                match = false;
+            }
+            else{
+                if(next_four[1] != 0){
+                    match = true;
                     x_matches++;
                 }
-                else if(board[i][j] == 2){
-                    o_matches++;
+                else if(next_four[2] != 0){
+                    match = true;
+                    o_mathces++;
+                }
+                else{
+                    match = false;
                 }
             }
-
         }
     }
-    for(int i = 0 ; i < 6 - (match_length - 1) ; i ++){
+    for(int i = 0 ; i < 3 ; i ++){
         for (int j = 0 ; j < 7 ; j ++){
             bool match = true;
-            for (int k = 0 ; k < match_length ; k ++){
-                if (board[i][j] != board[i + k][j] || board[i][j] == 0 || board[i+k][j] == 0){
-                    match = false;
-                    break;
-                }
+            vector<int> next_four(3, 0);
+            for (int k = 0 ; k < 4 ; k ++){
+                next_four[board[i + k][j]]++;
             }
-            if (match == true){
-                if(board[i][j] == 1 ){
+            if(next_four[1] != 0 && next_four[2] != 0){
+                //both x and o in the next four. no match
+                match = false;
+            }
+            else{
+                if(next_four[1] != 0){
+                    match = true;
                     x_matches++;
                 }
-                else if(board[i][j] == 2){
-                    o_matches++;
+                else if(next_four[2] != 0){
+                    match = true;
+                    o_mathces++;
+                }
+                else{
+                    match = false;
                 }
             }
         }
     }
-    for(int i = 0 ; i < 6 - (match_length - 1) ; i ++){
-        for (int j = 0 ; j < 7 - (match_length - 1) ; j ++){
+    for(int i = 0 ; i < 3 ; i ++){
+        for (int j = 0 ; j < 4 ; j ++){
             bool match = true;
-            for (int k = 0 ; k < match_length ; k ++){
-                if (board[i][j] != board[i + k][j + k] || board[i][j] == 0 || board[i + k][j + k] == 0){
-                    match = false;
-                    break;
-                }
+            vector<int> next_four(3, 0);
+            for (int k = 0 ; k < 4 ; k ++){
+                next_four[board[i + k][j + k]]++;
             }
-            if (match == true){
-                if(board[i][j] == 1){
+            if(next_four[1] != 0 && next_four[2] != 0){
+                //both x and o in the next four. no match
+                match = false;
+            }
+            else{
+                if(next_four[1] != 0){
+                    match = true;
                     x_matches++;
                 }
-                else if(board[i][j] == 2){
-                    o_matches++;
+                else if(next_four[2] != 0){
+                    match = true;
+                    o_mathces++;
+                }
+                else{
+                    match = false;
                 }
             }
         }
     }
-    for(int i = 0 ; i < 6 - (match_length - 1) ; i ++){
-        for (int j = 6 ; j >= match_length - 1 ; j --){
+    for(int i = 0 ; i < 3 ; i ++){
+        for (int j = 6 ; j > 2 ; j --){
             bool match = true;
-            for (int k = 0 ; k < match_length ; k ++){
-                if (board[i][j]!=board[i + k][j - k] || board[i][j] == 0 || board[i+k][j-k] == 0){
-                    match = false;
-                    break;
-                }
+            vector<int> next_four(3, 0);
+            for (int k = 0 ; k < 4 ; k ++){
+                next_four[board[i + k][j - k]]++;
             }
-            if (match == true){
-                if(board[i][j] == 1){
+            if(next_four[1] != 0 && next_four[2] != 0){
+                //both x and o in the next four. no match
+                match = false;
+            }
+            else{
+                if(next_four[1] != 0){
+                    match = true;
                     x_matches++;
                 }
-                else if(board[i][j] == 2){
-                    o_matches++;
+                else if(next_four[2] != 0){
+                    match = true;
+                    o_mathces++;
+                }
+                else{
+                    match = false;
                 }
             }
         }
     }
-    return make_tuple(x_matches, o_matches);
+    return make_tuple(x_matches, o_mathces);
 }
 
 int gameover(vector<vector<int>> board){
@@ -188,17 +215,10 @@ int evaluate(vector<vector<int>> board){
     score += three_x_matches * 2;
     score -= three_o_matches * 2;
 
-    //cout << "two x matches: " << two_x_matches << endl;
-    //cout << "two o matches: " << two_o_matches << endl;
-
-    //cout << "three x matches: " << three_x_matches << endl;
-    //cout << "three o matches: " << three_o_matches << endl;
-
     if(score < -9) score = -9;
     if(score > 9) score = 9;
 
     return score;
-    //return (std::rand() % 19) - 9;
 }
 
 int isGameOver(vector<vector<int>> board){
@@ -323,13 +343,13 @@ void print_board(vector<vector<int>> board){
     for(int i = board.size() - 1 ; i >= 0 ; i--){
         for(int j = 0 ; j < board[i].size() ; j ++){
             if(board[i][j] == 1){
-                cout << "X";
+                cout << "X ";
             }
             else if(board[i][j] == 2){
-                cout << "O";
+                cout << "O ";
             }
             else{
-                cout << '_';
+                cout << "_ ";
             }
         }
         cout << endl;
@@ -340,13 +360,13 @@ void play_with_human(){
     vector<vector<int>> board(6 , vector<int>(7,0));
      while(isGameOver(board) == 0){
         int move_;
+        cout << "Enter you move: ";
         cin >> move_ ;
         string m = "X" + to_string(move_);
         board = apply_moves(board,m);
         print_board(board);
-
         string aimoves = getbestmoves(board , 2 , 3);
-        cout << "AI Move is: " << aimoves << endl;
+        cout << "AI Move: " << aimoves << endl;
         board = apply_moves(board , aimoves);
         print_board(board);
      }
