@@ -4,6 +4,7 @@
 #include <tuple>
 #include <string>
 #include<random>
+#include <climits>
 
 using namespace std;
 
@@ -280,31 +281,42 @@ int b = m[1] - '0';
     return temp_board;
 }
 
-int minmax_(vector<vector<int>> board , int player , int depth){
-   int score;
-   if (depth == 0 || isGameOver(board) == 1){
+int minmax_(vector<vector<int>> board, int player, int depth, int alpha, int beta) {
+    int score;
+    if (depth == 0 || isGameOver(board) == 1) {
         return gameover(board);
     }
-   if(player == 1){
-      score == -10;
-      vector<string> moves = generate_moves(board);
-      for(int i = 0 ; i < moves.size() ; i ++){
-         vector<vector<int>> newboard = apply_moves(board , moves[i]);
-         int tempscore = minmax_(newboard , 2 , depth - 1);
-         score = max(score , tempscore);
-      }
-      return score;
-   }
-   if(player == 2){
-      score = 10;
-      vector<string> moves = generate_moves(board);
-      for(int i = 0 ; i < moves.size() ; i ++){
-        vector<vector<int>> newboard = apply_moves(board , moves[i]);
-          int tempscore = minmax_(newboard , 1 , depth);
-          score = min(score,tempscore);
-      }
-      return score;
-   }
+
+    if (player == 1) {
+        score = -10;
+        vector<string> moves = generate_moves(board);
+        for (int i = 0; i < moves.size(); i++) {
+            vector<vector<int>> newboard = apply_moves(board, moves[i]);
+            int tempscore = minmax_(newboard, 2, depth - 1, alpha, beta);
+            score = max(score, tempscore);
+            alpha = max(alpha, score);
+            if (beta <= alpha) {
+                break; // Beta cut-off
+            }
+        }
+        return score;
+    }
+
+    if (player == 2) {
+        score = 10;
+        vector<string> moves = generate_moves(board);
+        for (int i = 0; i < moves.size(); i++) {
+            vector<vector<int>> newboard = apply_moves(board, moves[i]);
+            int tempscore = minmax_(newboard, 1, depth - 1, alpha, beta);
+            score = min(score, tempscore);
+            beta = min(beta, score);
+            if (beta <= alpha) {
+                break; // Alpha cut-off
+            }
+        }
+        return score;
+    }
+    return score;
 }
 
 string getbestmoves(vector<vector<int>> board , int maximize , int depth){
@@ -322,14 +334,14 @@ string getbestmoves(vector<vector<int>> board , int maximize , int depth){
         vector<vector<int>> temp_board = apply_moves(board , moves[i]);
         int temp_score = 0;
         if(maximize == 1){
-            temp_score = minmax_(temp_board , 2 , depth - 1);
+            temp_score = minmax_(temp_board , 2 , depth - 1, INT_MIN, INT_MAX);
             if(temp_score > score){
                 score = temp_score;
                 bestMove = moves[i];
             }
         }
         else{
-            temp_score = minmax_(temp_board , 1 , depth - 1);
+            temp_score = minmax_(temp_board , 1 , depth - 1, INT_MIN, INT_MAX);
             if(temp_score < score){
                 score = temp_score;
                 bestMove = moves[i];
