@@ -1,2 +1,2 @@
 # ConnectFour_MinMax
-A simple AI for playing connect four game.
+A simple AI designed for playing connect four game implemented using Minmax algorithm. 
