@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1740158424 source:d:\github\connectfour_minmax\main.cpp
+	<iostream>
+	<vector>
+	<bits/stdc++.h>
+	<tuple>
+	<string>
+	<random>
+	<climits>
+

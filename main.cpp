@@ -199,7 +199,17 @@ int gameover(vector<vector<int>> board){
     return 0;
 }
 
+int isGameOver(vector<vector<int>> board){
+      if(gameover(board) == 10 || gameover(board) == -10){
+            return 1;
+      }
+      return 0;
+}
+
 int evaluate(vector<vector<int>> board){
+    if (isGameOver(board) == 1) {
+        return gameover(board);
+    }
     tuple<int, int> two_matches = find_match(board, 2);
     tuple<int, int> three_matches = find_match(board, 3);
 
@@ -220,13 +230,6 @@ int evaluate(vector<vector<int>> board){
     if(score > 9) score = 9;
 
     return score;
-}
-
-int isGameOver(vector<vector<int>> board){
-      if(gameover(board) == 10 || gameover(board) == -10){
-            return 1;
-      }
-      return 0;
 }
 
 vector<string> generate_moves(vector<vector<int>> board){
@@ -284,10 +287,7 @@ int b = m[1] - '0';
 int minmax_(vector<vector<int>> board, int player, int depth, int alpha, int beta) {
     int score;
 
-    if (isGameOver(board) == 1) {
-        return gameover(board);
-    }
-    if(depth == 0){
+    if(depth == 0 || isGameOver(board) == 1){
         return evaluate(board);
     }
 
@@ -381,10 +381,21 @@ void play_with_human(){
         string m = "X" + to_string(move_);
         board = apply_moves(board,m);
         print_board(board);
+
+        if(isGameOver(board)){
+            break;
+        }
+
         string aimoves = getbestmoves(board , 2 , 3);
         cout << "AI Move: " << aimoves << endl;
         board = apply_moves(board , aimoves);
         print_board(board);
+     }
+     if(gameover(board) == 10){
+        cout << "You Won";
+     }
+     else{
+        cout << "You Lost";
      }
 }
 
