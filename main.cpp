@@ -283,7 +283,10 @@ int b = m[1] - '0';
 
 int minmax_(vector<vector<int>> board, int player, int depth, int alpha, int beta) {
     int score;
-    if (depth == 0 || isGameOver(board) == 1) {
+    if(depth == 0){
+        return evaluate(board);
+    }
+    if (isGameOver(board) == 1) {
         return gameover(board);
     }
 
